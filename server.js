@@ -44,6 +44,26 @@ let products = [
 app.get('/', (req, res) => {
   res.send('Welcome to the Product API! Go to /api/products to see all products.');
 });
+const { MongoClient } = require('mongodb');
+
+async function connectToDatabase() {
+  const uri = process.env.MONGODB_URI;  // Store your connection string in .env for security
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+    return client.db();  // Return the database object
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+    throw error;
+  }
+}
+
+// Example usage in a route
+const db = await connectToDatabase();
+const collection = db.collection('products');
+// Now you can perform CRUD operations, e.g., collection.find({})
 
 // TODO: Implement the following routes:
 // GET /api/products - Get all products
